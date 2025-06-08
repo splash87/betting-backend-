@@ -3,10 +3,14 @@ require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Serve frontend from /public folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -27,7 +31,6 @@ async function createTable() {
   `;
   await pool.query(query);
 }
-
 createTable().catch(console.error);
 
 // API endpoint to record a bet
@@ -52,6 +55,11 @@ app.post('/api/bets', async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: 'Database error' });
   }
+});
+
+// Optional: fallback to index.html for client-side routing (if needed)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Start server
