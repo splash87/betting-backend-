@@ -57,7 +57,7 @@ app.post('/api/bets', async (req, res) => {
   }
 });
 // API endpoint to fetch all bets
-app.get('/api/bets', async (req, res) => {
+app.get('/api/yardparty', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM bets ORDER BY timestamp DESC');
     res.json({ success: true, bets: result.rows });
