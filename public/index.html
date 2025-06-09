@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Betting Simulator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f7f7f7; }
+    .bet-form { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; }
+    label, select, input { display: block; margin-bottom: 10px; width: 100%; }
+    button { padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:disabled { background-color: gray; }
+  </style>
+</head>
+<body>
+  <div class="bet-form">
+    <h2>Betting Simulator</h2>
+    <form id="betForm">
+      <label for="option">Choose a bet option:</label>
+      <select id="option" required>
+        <option value="">-- Select Option --</option>
+        <option value="Team A">Team A</option>
+        <option value="Team B">Team B</option>
+        <option value="Draw">Draw</option>
+      </select>
+
+      <label for="amount">Enter bet amount:</label>
+      <input type="number" id="amount" placeholder="e.g., 500" required min="100"/>
+
+      <button type="submit">Place Bet</button>
+    </form>
+    <p id="confirmation"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('betForm');
+    const confirmation = document.getElementById('confirmation');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const bet_option = document.getElementById('option').value;
+      const stake = parseFloat(document.getElementById('amount').value);
+      const odds = 2.5; // Example odds
+
+      const ref_id = 'BET-' + Math.floor(Math.random() * 1000000);
+      const timestamp = new Date().toISOString();
+
+      const bet = { ref_id, bet_option, stake, odds, timestamp };
+
+      try {
+        const res = await fetch('/api/bets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bet)
+        });
+
+        if (res.ok) {
+          confirmation.innerHTML = `
+            ✅ Bet placed! <br>
+            Ref ID: <b>${ref_id}</b><br>
+            Please transfer ₦${stake} using <b>${ref_id}</b> as payment note.<br>
+            <a href="https://wa.me/2347081840467?text=I%20paid%20with%20Ref%20ID:%20${ref_id}" target="_blank">
+              Confirm via WhatsApp
+            </a>
+          `;
+        } else {
+          confirmation.textContent = '❌ Failed to place bet. Try again.';
+        }
+      } catch (err) {
+        confirmation.textContent = '❌ Error connecting to backend.';
+      }
+    });
+  </script>
+</body>
+</html>
