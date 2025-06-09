@@ -28,10 +28,26 @@
       margin-bottom: 1rem;
       color: #007bff;
     }
+    .bet-options {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .bet-option {
+      flex: 1;
+      padding: 0.5rem;
+      text-align: center;
+      background: #e9ecef;
+      border-radius: 5px;
+    }
+    .bet-option input[type="radio"] {
+      margin-right: 0.4rem;
+    }
     label {
+      font-weight: bold;
       display: block;
       margin-bottom: 0.5rem;
-      font-weight: bold;
     }
     input[type="number"], button {
       width: 100%;
@@ -40,15 +56,6 @@
       border-radius: 5px;
       border: 1px solid #ccc;
       font-size: 1rem;
-    }
-    .bet-option {
-      margin-bottom: 1rem;
-    }
-    .bet-option label {
-      font-weight: normal;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
     button {
       background: #007bff;
@@ -85,14 +92,23 @@
     <h2>Place Your Bet</h2>
     <form id="betForm">
       <label>Choose a bet option:</label>
-      <div class="bet-option">
-        <label><input type="radio" name="bet_option" value="Akube" data-odds="2.18" required> Akube (2.18)</label>
-        <label><input type="radio" name="bet_option" value="Draw" data-odds="3.00" required> Draw (3.00)</label>
-        <label><input type="radio" name="bet_option" value="Richie" data-odds="2.20" required> Richie (2.20)</label>
+      <div class="bet-options">
+        <div class="bet-option">
+          <label><input type="radio" name="bet_option" value="Akube" data-odds="2.18" required> Akube</label>
+          <div>2.18</div>
+        </div>
+        <div class="bet-option">
+          <label><input type="radio" name="bet_option" value="Draw" data-odds="3.00" required> Draw</label>
+          <div>3.00</div>
+        </div>
+        <div class="bet-option">
+          <label><input type="radio" name="bet_option" value="Richie" data-odds="2.20" required> Richie</label>
+          <div>2.20</div>
+        </div>
       </div>
 
       <label for="amount">Stake Amount (₦)</label>
-      <input type="number" id="amount" placeholder="e.g., 500" required min="100"/>
+      <input type="number" id="amount" placeholder="₦3000 - ₦60000" required min="3000" max="60000"/>
 
       <button type="submit">Place Bet</button>
     </form>
@@ -115,6 +131,12 @@
       const bet_option = selectedOption.value;
       const odds = parseFloat(selectedOption.dataset.odds);
       const stake = parseFloat(document.getElementById('amount').value);
+
+      if (stake < 3000 || stake > 60000) {
+        alert("Stake must be between ₦3000 and ₦60000.");
+        return;
+      }
+
       const ref_id = 'BET-' + Math.floor(Math.random() * 1000000);
       const timestamp = new Date().toISOString();
 
