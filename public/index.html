@@ -85,6 +85,11 @@
       font-weight: bold;
       margin-top: 1rem;
     }
+    .copyable {
+      cursor: pointer;
+      color: #007bff;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -152,14 +157,23 @@
         if (res.ok) {
           confirmation.innerHTML = `
             ✅ <strong>Bet placed successfully!</strong><br><br>
-            <strong>Ref ID:</strong> ${ref_id}<br>
+
+            <strong>Ref ID:</strong> 
+            <span class="copyable" onclick="copyToClipboard('${ref_id}')">
+              ${ref_id} 📋
+            </span><br>
+
             <strong>Option:</strong> ${bet_option}<br>
             <strong>Stake:</strong> ₦${stake}<br>
             <strong>Odds:</strong> ${odds}<br><br>
+
             <strong>Transfer ₦${stake} to:</strong><br>
-            <b>7081840467 (Opay)</b><br>
+            <span class="copyable" onclick="copyToClipboard('7081840467')">
+              <b>7081840467 (Opay)</b> 📋
+            </span><br>
             Account Name: Oluwole<br>
             Use <b>${ref_id}</b> as payment note.<br><br>
+
             ⏳ This confirmation will expire in 7 minutes.<br>
             ⚠️ <em>No refund if wrong amount or missing Ref ID.</em>
           `;
@@ -169,7 +183,6 @@
           whatsappLink.href = `https://wa.me/2347081840467?text=${encodedMsg}`;
           whatsappLink.style.display = 'inline-block';
 
-          // Hide confirmation and button after 7 minutes (420000 ms)
           setTimeout(() => {
             confirmation.style.display = 'none';
             whatsappLink.style.display = 'none';
@@ -185,6 +198,14 @@
         whatsappLink.style.display = 'none';
       }
     });
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert(`Copied: ${text}`);
+      }).catch(() => {
+        alert('Failed to copy text');
+      });
+    }
   </script>
 </body>
 </html>
