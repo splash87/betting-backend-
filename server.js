@@ -56,6 +56,17 @@ app.post('/api/bets', async (req, res) => {
     res.status(500).json({ success: false, message: 'Database error' });
   }
 });
+// API endpoint to fetch all bets
+app.get('/api/bets', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM bets ORDER BY timestamp DESC');
+    res.json({ success: true, bets: result.rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to fetch bets' });
+  }
+});
+
 
 // Optional: fallback to index.html for client-side routing (if needed)
 app.get('*', (req, res) => {
